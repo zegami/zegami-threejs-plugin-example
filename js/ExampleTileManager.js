@@ -1,5 +1,5 @@
 /**
- * @license ExampleTileManager for Zegami Copyright (c) 2017, Coritsu Group All Rights Reserved.
+ * @license ExampleTileManager for Zegami Ltd Copyright (c) 2017, Coritsu Group All Rights Reserved.
  */
 
 /**
@@ -14,30 +14,29 @@ function ExampleTileManagerPlugin(Ajax, Config, Events, Helpers) {
     'use strict';
 
     this.constructor = function (viewManager, options, name) {
-        var self = this; // Own reference for inner functions
 
         // Call the superclass constructor (SimpleTileManager) for basic features
-        self.base.constructor.apply(self, arguments);
+        this.base.constructor.apply(this, arguments);
 
         // Define and initialize properties
-        self.type = 'Example';                // Set tile manager type name
-        self.dataDriven = true;               // Flag to indicate behaviour in internal features.
+        this.type = 'Example';                // Set tile manager type name
+        this.dataDriven = true;               // Flag to indicate behaviour in internal features.
 
         //Predefine the geometry and materials.
-        self.geometry = new THREE.ParametricGeometry(self.klein, 25, 25);
-        self.material = new THREE.MeshPhongMaterial({color: 0x0055ff});
+        this.geometry = new THREE.ParametricGeometry(this.klein, 25, 25);
+        this.material = new THREE.MeshPhongMaterial({color: 0x0055ff});
 
         //We key in datastore indexes to know which objects we've constructed.
-        self.objectMap = {};
+        this.objectMap = {};
 
         //Set this information so we know what size your tiles are.
-        self.picInfo = {
+        this.picInfo = {
             width: 128,
             height: 128
         }
 
         //Flag helps tell the baseview and simpletilemanager to ignore picture sources.
-        self.imageless = true;
+        this.imageless = true;
     }
     /**
      * Function for parametric geometries. Example of threejs capabilities.
@@ -70,8 +69,7 @@ function ExampleTileManagerPlugin(Ajax, Config, Events, Helpers) {
      * You need this to define the size of the view area.
      */
     this.getDynamicPictureInfo = function () {
-        var self = this;
-        return { fileSize: 0, width: self.picInfo.width, height: self.picInfo.height, id: 0, source: '' };
+        return { fileSize: 0, width: this.picInfo.width, height: this.picInfo.height, id: 0, source: '' };
     }
     /**
      * Initializes the drawing of textures based on the view.
@@ -82,7 +80,6 @@ function ExampleTileManagerPlugin(Ajax, Config, Events, Helpers) {
      * @param   {Object}    data    The data objects of the planes sent.
      */
     this.setTexture = function (planes, zoom, offset, data) {
-        var self = this;
 
         //Add our main group to the scene if it doesn't already exist.
         if (typeof this.viewManager.groups.example === 'undefined') {
@@ -92,9 +89,9 @@ function ExampleTileManagerPlugin(Ajax, Config, Events, Helpers) {
 
         //Loop through our planes.
         for (var i=0; i<planes.length; i++) {
-            if (typeof self.objectMap[planes[i].datastoreIndex] === 'undefined') {
+            if (typeof this.objectMap[planes[i].datastoreIndex] === 'undefined') {
                 //Create a new THREEJS mesh with the geometry and material already defined on init.
-                var object = new THREE.Mesh(self.geometry,self.material);
+                var object = new THREE.Mesh(this.geometry,this.material);
 
                 //Random rotation for some variation.
                 object.rotation.set(Math.random()*Math.PI*2,0,0);
@@ -106,7 +103,7 @@ function ExampleTileManagerPlugin(Ajax, Config, Events, Helpers) {
                 //Add it to the group (to the scene) so we can see it.
                 this.viewManager.groups.example.add(object);
 
-                self.objectMap[planes[i].datastoreIndex] = object;
+                this.objectMap[planes[i].datastoreIndex] = object;
 
                 //This triggers an update to our plane objects, they control position & scale.
                 planes[i].update(true);
